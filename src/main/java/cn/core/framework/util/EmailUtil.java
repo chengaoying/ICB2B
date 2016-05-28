@@ -49,7 +49,7 @@ public class EmailUtil {
 		Message message = new MimeMessage(session);
 		try { 
 			//发件人
-			message.setFrom(new InternetAddress(Configuration.getProperty("mail_sender"),"屏芯网","utf-8"));
+			message.setFrom(new InternetAddress(Configuration.getProperty("mail_sender"),"伙拼网","utf-8"));
 
 			//将中文转化为GB2312编码，通过Base64后设置邮件名称
 			subject = new String(Base64.encode((subject).getBytes("GB2312"))); 

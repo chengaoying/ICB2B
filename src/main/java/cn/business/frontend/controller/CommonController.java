@@ -74,6 +74,16 @@ public class CommonController extends BaseController{
 	}
 	
 	/**
+	 * 获取网站全路径
+	 * @return
+	 */
+	public String getFrontendUrl(){
+		String url = "http://" + request.getServerName() + ":" + request.getServerPort()
+				+ request.getContextPath() + "/"+Constant.CONST_FRONTEND;
+		return url;
+	}
+	
+	/**
 	 * 文件上传
 	 * @param path	文件相对路径
 	 * @param file	待上传的文件

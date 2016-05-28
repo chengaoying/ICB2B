@@ -40,4 +40,7 @@
 	<!-- 产品分类层级数(最大为2) -->
 	<property name="product_class_level_number">2</property>
 	
+	<!-- api接口参数，私钥key,用于加密 -->
+	<property name="api_key"><![CDATA[!#ic%.@496^]]></property>
+	
 </configuration>

@@ -63,6 +63,11 @@ public class User implements Serializable{
 	private int point;
 	
 	/**
+	 * 激活code
+	 */
+	private String activateCode;
+	
+	/**
 	 * 创建时间
 	 */
 	private String addTime;
@@ -164,6 +169,14 @@ public class User implements Serializable{
 
 	public void setPoint(int point) {
 		this.point = point;
+	}
+
+	public String getActivateCode() {
+		return activateCode;
+	}
+
+	public void setActivateCode(String activateCode) {
+		this.activateCode = activateCode;
 	}
 
 	public String getAddTime() {

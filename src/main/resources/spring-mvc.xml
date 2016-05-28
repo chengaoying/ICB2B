@@ -51,6 +51,12 @@
             <bean class="cn.core.framework.interceptor.FrontendInterceptor"/>
         </mvc:interceptor>
         
+        <!-- Api拦截器 -->
+        <mvc:interceptor>
+            <mvc:mapping path="/api/**"/>
+            <bean class="cn.core.framework.interceptor.ApiInterceptor"/>
+        </mvc:interceptor>
+        
         <!--国际化资源切换（根据请求参数中的locale参数自动切换）-->
         <mvc:interceptor>
             <mvc:mapping path="/frontend/**"/>
@@ -66,9 +72,9 @@
 	</bean>
 	
 	<!-- 视图二、json视图 -->
-	<bean name="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+	<!-- <bean name="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
 		<property name="contentType" value="text/html;charset=UTF-8"/>
-	</bean>
+	</bean> -->
 	
 	<!--文件上传-->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

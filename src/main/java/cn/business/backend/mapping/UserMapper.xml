@@ -14,6 +14,7 @@
 		<result column="status" property="status"/>
 		<result column="level" property="level"/>
 		<result column="point" property="point"/>
+		<result column="activate_code" property="activateCode"/>
 		<result column="add_time" property="addTime"/>
 	</resultMap>
 	
@@ -30,7 +31,7 @@
 	<select id="loadById" resultMap="user" parameterType="int">
 		select 
 			u.id, u.name, u.password, u.real_name, u.email, u.mobile,
-			u.other_account, u.status, u.level, u.point, u.add_time,
+			u.other_account, u.status, u.level, u.point, u.activate_code, u.add_time,
 			r.id as role_id, r.name_zh, r.name_en, r.auth
 		from 
 			t_user u left join t_user_role ur on u.id = ur.user_id  
@@ -41,7 +42,7 @@
 	<!-- 根据用户名查询 -->
 	<select id="loadByName" resultMap="user" parameterType="String">
 		select u.id, u.name, u.password, u.real_name, u.email, u.mobile,
-			u.other_account, u.status, u.level, u.point, u.add_time,
+			u.other_account, u.status, u.level, u.point, u.activate_code, u.add_time,
 			r.id as role_id, r.name_zh, r.name_en, r.auth 
 		from t_user u left join t_user_role ur on u.id = ur.user_id   
         left join t_role r on ur.role_id = r.id   
@@ -69,17 +70,23 @@
 		update 
 			t_user
 		set 
-			name=#{name}
+			id=#{id}
 			<if test="password != null and password != ''">
 			    ,password=#{password}
+			</if>
+			<if test="activateCode != null and activateCode != ''">
+			    ,activate_code=#{activateCode}
+			</if>
+			<if test="addTime != null and addTime != ''">
+			    ,add_time=#{addTime}
 			</if>
 		where id=#{id}
 	</update>
 	
 	<!-- 保存 -->
 	<insert id="save" parameterType="cn.business.backend.model.User" useGeneratedKeys="true" keyProperty="id">
-		insert into t_user(name,password,real_name,email,mobile,other_account,status,level,point,add_time)
-		values(#{name},#{password},#{realName},#{email},#{mobile},#{otherAccount},#{status},#{level},#{point},#{addTime})
+		insert into t_user(name,password,real_name,email,mobile,other_account,status,level,point,activate_code,add_time)
+		values(#{name},#{password},#{realName},#{email},#{mobile},#{otherAccount},#{status},#{level},#{point},#{activateCode},#{addTime})
 	</insert>
 	
 	<!-- 保存用户和角色之间的关联 -->  

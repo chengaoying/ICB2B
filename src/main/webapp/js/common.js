@@ -24,3 +24,11 @@ function isFloat(c)
     var r= /^[+-]?[1-9]?[0-9]*\.[0-9]*$/;
     return r.test(c);
 }
+
+//判空
+function isEmpty(a){
+	if(typeof a === 'undefined' || a === null || a === ""){
+		return true;
+	}
+	return false;
+}
