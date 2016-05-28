@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.business.backend.dao.IGroupGoodsDao">
+	<resultMap id="BaseResultMap" type="cn.business.backend.model.GroupGoods">
+		<id column="goods_id" jdbcType="INTEGER" property="goodsId" />
+		<result column="promote_price" jdbcType="REAL" property="promotePrice" />
+		<result column="max_count" jdbcType="INTEGER" property="maxCount" />
+		<result column="min_count" jdbcType="INTEGER" property="minCount" />
+		<result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
+		<result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		goods_id, promote_price, max_count, min_count, start_date, end_date
+	</sql>
+
+	<!-- 根据id查询 -->
+	<select id="loadById" resultMap="BaseResultMap" parameterType="int">
+		select
+		<include refid="Base_Column_List"></include>
+		from t_group_goods where goods_id = #{id}
+	</select>
+
+	<!-- 分页查询 -->
+	<select id="queryAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"></include>
+		from t_group_goods
+		<where>
+			<!-- 品牌ID -->
+			<if test="id != null and '' != id">
+				goods_id = #{id}
+			</if>
+			<!-- 特卖开始时间 -->
+			<if test="startDate != null and '' != startDate">
+				and discount_start_date like "%"#{startDate}"%"
+			</if>
+			<!-- 特卖结束时间 -->
+			<if test="endDate != null and '' != endDate">
+				and discount_end_date like "%"#{endDate}"%"
+			</if>
+		</where>
+		<if test="orderBy != null and '' != orderBy">
+			order by ${orderBy}
+		</if>
+		<if test="offset != null and '' != offset and limit != null and '' != limit">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+
+	<!-- 查找记录总记录数 -->
+	<select id="queryCount" resultType="int">
+		select count(*) from
+		t_group_goods
+	</select>
+
+	<!-- 更新 -->
+	<update id="update" parameterType="cn.business.backend.model.GroupGoods">
+		update t_group_goods
+		set promote_price = #{promotePrice,jdbcType=REAL},
+		max_count = #{maxCount,jdbcType=INTEGER},
+		min_count = #{minCount,jdbcType=INTEGER},
+		start_date =
+		#{startDate,jdbcType=TIMESTAMP},
+		end_date = #{endDate,jdbcType=TIMESTAMP}
+		where goods_id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<!-- 保存 -->
+	<insert id="save" parameterType="cn.business.backend.model.GroupGoods" useGeneratedKeys="true" keyProperty="id">
+		insert into t_group_goods
+		(goods_id, promote_price, max_count,min_count, start_date, end_date)
+		values
+		(#{goodsId,jdbcType=INTEGER}, #{promotePrice,jdbcType=REAL}, #{maxCount,jdbcType=INTEGER},
+		#{minCount,jdbcType=INTEGER},
+		#{startDate,jdbcType=TIMESTAMP}, #{endDate,jdbcType=TIMESTAMP}
+		)
+	</insert>
+
+	<!-- 删除 -->
+	<delete id="delete" parameterType="int">
+		delete from t_group_goods
+		where goods_id =
+		#{id,jdbcType=INTEGER}
+	</delete>
+</mapper>

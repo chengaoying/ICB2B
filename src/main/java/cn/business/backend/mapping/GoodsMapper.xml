@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.business.backend.dao.IGoodsDao">
+	<resultMap id="BaseResultMap" type="cn.business.backend.model.Goods">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="model" jdbcType="VARCHAR" property="model" />
+		<result column="category_id" jdbcType="INTEGER" property="categoryId" />
+		<result column="brand_id" jdbcType="INTEGER" property="brandId" />
+		<result column="seller_id" jdbcType="INTEGER" property="sellerId" />
+		<result column="seller_name" jdbcType="VARCHAR" property="sellerName" />
+		<result column="pack" jdbcType="VARCHAR" property="pack" />
+		<result column="wrap" jdbcType="VARCHAR" property="wrap" />
+		<result column="is_in_stock" jdbcType="TINYINT" property="isInStock" />
+		<result column="batch" jdbcType="VARCHAR" property="batch" />
+		<result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
+		<result column="doc_url" jdbcType="VARCHAR" property="docUrl" />
+		<result column="specs_url" jdbcType="VARCHAR" property="specsUrl" />
+		<result column="rohs" jdbcType="VARCHAR" property="rohs" />
+		<result column="normal_price" jdbcType="REAL" property="normalPrice" />
+		<result column="type" jdbcType="TINYINT" property="type" />
+		<result column="inventory" jdbcType="INTEGER" property="inventory" />
+		<result column="keywords" jdbcType="VARCHAR" property="keywords" />
+		<result column="is_delete" jdbcType="TINYINT" property="isDelete" />
+		<result column="is_new" jdbcType="TINYINT" property="isNew" />
+		<result column="is_hot" jdbcType="TINYINT" property="isHot" />
+		<result column="give_points" jdbcType="INTEGER" property="givePoints" />
+		<result column="sort" jdbcType="TINYINT" property="sort" />
+		<result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, model, category_id, brand_id, seller_id, seller_name, pack, wrap, is_in_stock,
+		batch, img_url, doc_url,
+		specs_url, rohs, normal_price, type, inventory, keywords,
+		is_delete, is_new, is_hot, give_points, sort, add_time
+	</sql>
+
+	<!-- 根据id查询 -->
+	<select id="loadById" resultMap="BaseResultMap" parameterType="int">
+		select
+		<include refid="Base_Column_List"></include>
+		from t_goods where id = #{id}
+	</select>
+
+	<!-- 分页查询 -->
+	<select id="queryAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"></include>
+		from t_goods
+		<where>
+			<!-- 品牌ID -->
+			<if test="id != null and '' != id">
+				id = #{id}
+			</if>
+			<!-- 型号 -->
+			<if test="model != null and '' != model">
+				and model like "%"#{model}"%"
+			</if>
+			<!-- 品牌 -->
+			<if test="categoryId != null and '' != categoryId">
+				and category_id like "%"#{categoryId}"%"
+			</if>
+		</where>
+		<if test="orderBy != null and '' != orderBy">
+			order by ${orderBy}
+		</if>
+		<if test="offset != null and '' != offset and limit != null and '' != limit">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+
+	<!-- 查找记录总记录数 -->
+	<select id="queryCount" resultType="int">
+		select count(*) from t_goods
+	</select>
+
+	<!-- 更新 -->
+	<update id="update" parameterType="cn.business.backend.model.Brand">
+		update t_goods
+		<set>
+			name_zh = #{nameZh,jdbcType=VARCHAR},
+			name_en =
+			#{nameEn,jdbcType=VARCHAR},
+			<if test="logo != null">
+				logo = #{logo,jdbcType=VARCHAR},
+			</if>
+			desc_zh = #{descZh,jdbcType=VARCHAR},
+			desc_en
+			=#{descEn,jdbcType=VARCHAR}
+		</set>
+		where
+		id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<!-- 保存 -->
+	<insert id="save" parameterType="cn.business.backend.model.Brand" useGeneratedKeys="true" keyProperty="id">
+		insert
+		into t_goods (model, category_id,
+		brand_id, seller_id, seller_name,
+		pack, wrap, is_in_stock,
+		batch, img_url, doc_url,
+		specs_url, rohs, normal_price,
+		type, inventory, keywords,
+		is_delete,
+		is_new, is_hot,
+		give_points, sort, add_time
+		)
+		values
+		(#{model,jdbcType=VARCHAR},
+		#{categoryId,jdbcType=INTEGER},
+		#{brandId,jdbcType=INTEGER}, #{sellerId,jdbcType=INTEGER},
+		#{sellerName,jdbcType=VARCHAR},
+		#{pack,jdbcType=VARCHAR}, #{wrap,jdbcType=VARCHAR}, #{isInStock,jdbcType=TINYINT},
+		#{batch,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, #{docUrl,jdbcType=VARCHAR},
+		#{specsUrl,jdbcType=VARCHAR},
+		#{rohs,jdbcType=VARCHAR}, #{normalPrice,jdbcType=REAL},
+		#{type,jdbcType=TINYINT}, #{inventory,jdbcType=INTEGER},
+		#{keywords,jdbcType=VARCHAR},
+		#{isDelete,jdbcType=TINYINT}, #{isNew,jdbcType=TINYINT}, #{isHot,jdbcType=TINYINT},
+		#{givePoints,jdbcType=INTEGER}, #{sort,jdbcType=TINYINT}, #{addTime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+
+	<!-- 删除 -->
+	<delete id="delete" parameterType="int">
+		delete from t_goods
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+</mapper>

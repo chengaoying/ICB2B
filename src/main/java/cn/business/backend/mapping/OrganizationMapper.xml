@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.business.backend.dao.IOrganizationDao">
+
+	<!-- 嵌套结果：如果两张表的字段名字有相同的，那么嵌套的结果的值会有问题 -->
+	<!-- 有此类问可以使用嵌套查询，如下： -->
+	
+	<resultMap type="cn.business.backend.model.Organization" id="Organization">
+			<id column="id" property="id"/>
+			<result column="name" property="name"/>
+			<result column="short_name" property="shortName"/>
+			<result column="country" property="country"/>
+			<result column="province" property="province"/>
+			<result column="city" property="city"/>
+			<result column="district" property="district"/>
+			<result column="address" property="address"/>
+			<result column="business_model" property="businessModel"/>
+			<result column="contacts" property="contacts"/>
+			<result column="phone" property="phone"/>
+			<result column="qualification0" property="qualification0"/>
+			<result column="qualification1" property="qualification1"/>
+			<result column="qualification2" property="qualification2"/>
+			<result column="qualification3" property="qualification3"/>
+			<result column="qualification4" property="qualification4"/>
+			<result column="qualification5" property="qualification5"/>
+			<result column="qualification6" property="qualification6"/>
+			<result column="status" property="status"/>
+			<result column="add_time" property="addTime"/>
+	</resultMap>
+		
+	<!-- 分页查询 -->
+	<select id="queryAll" resultMap="Organization">
+		select * from t_organization 
+		<where>
+			<if test="name != null and '' != name">
+			    name like "%"#{name}"%"
+			</if>
+			<if test="contacts != null and '' != contacts">
+			   and contacts like "%"#{contacts}"%"
+			</if>
+		</where>
+		limit #{offset},#{limit}
+	</select>
+
+	<!-- 查找记录总记录数 -->
+	<select id="queryCount" resultType="int">
+		select count(*) from t_organization
+	</select>
+	
+	<!-- 根据id查询单个记录数 -->
+	<select id="loadById" resultMap="Organization" parameterType="int">
+		select * from t_organization where id = #{id}
+	</select>
+	
+	<update  id="update"  parameterType="cn.business.backend.model.Organization">
+		update 
+			t_organization
+		set 
+			id=#{id}
+			<if test="name != null and name != ''">
+			    ,name = #{name}
+			</if>
+			<if test="shortName != null and shortName != ''">
+			    ,short_name = #{shortName}
+			</if>
+			<if test="country != null and country != ''">
+			    ,country = #{country}
+			</if>
+			<if test="province != null and province != ''">
+			    ,province = #{province}
+			</if>
+			<if test="city != null and city != ''">
+			    ,city = #{city}
+			</if>
+			<if test="district != null and district != ''">
+			    ,district = #{district}
+			</if>
+			<if test="address != null and address != ''">
+			    ,address = #{address}
+			</if>
+			<if test="businessModel != null and businessModel != ''">
+			    ,business_model = #{businessModel}
+			</if>
+			<if test="contacts != null and contacts != ''">
+			    ,contacts = #{contacts}
+			</if>
+			<if test="phone != null and phone != ''">
+			    ,phone = #{phone}
+			</if>
+			<if test="qualification0 != null and qualification0 != ''">
+			    ,qualification0 = #{qualification0}
+			</if>
+			<if test="qualification1 != null and qualification1 != ''">
+			    ,qualification1 = #{qualification1}
+			</if>
+			<if test="qualification2 != null and qualification2 != ''">
+			    ,qualification2 = #{qualification2}
+			</if>
+			<if test="qualification3 != null and qualification3 != ''">
+			    ,qualification3 = #{qualification3}
+			</if>
+			<if test="qualification4 != null and qualification4 != ''">
+			    ,qualification4 = #{qualification4}
+			</if>
+			<if test="qualification5 != null and qualification5 != ''">
+			    ,qualification5 = #{qualification5}
+			</if>
+			<if test="qualification6 != null and qualification6 != ''">
+			    ,qualification6 = #{qualification6}
+			</if>
+			<if test="status != null">
+			    ,status = #{status}
+			</if>
+		where id=#{id}
+	</update>
+	
+	<insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="cn.business.backend.model.Organization">
+		insert into t_organization(name,short_name,country,province,city,district,address,business_model,contacts,phone,qualification0,qualification1,qualification2,qualification3,qualification4,qualification5,qualification6,status,add_time)
+		values(#{name},#{shortName},#{country},#{province},#{city},#{district},#{address},#{businessModel},#{contacts},#{phone},#{qualification0},#{qualification1},#{qualification2},#{qualification3},#{qualification4},#{qualification5},#{qualification6},#{status},#{addTime})
+	</insert>
+	
+	<delete id="delete" parameterType="int">
+		delete from t_organization where id = #{id}
+	</delete>
+	
+</mapper>

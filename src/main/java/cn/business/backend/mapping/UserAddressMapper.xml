@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.business.backend.dao.IUserAddressDao">
+
+	<!-- 嵌套结果：如果两张表的字段名字有相同的，那么嵌套的结果的值会有问题 -->
+	<!-- 有此类问可以使用嵌套查询，如下： -->
+	
+	<resultMap type="cn.business.backend.model.UserAddress" id="UserAddress">
+			<id column="id" property="id"/>
+			<result column="user_id" property="userId"/>
+			<result column="contacts" property="contacts"/>
+			<result column="tel" property="tel"/>
+			<result column="mobile" property="mobile"/>
+			<result column="country" property="country"/>
+			<result column="province" property="province"/>
+			<result column="city" property="city"/>
+			<result column="district" property="district"/>
+			<result column="address" property="address"/>
+	</resultMap>
+		
+	<!-- 分页查询 -->
+	<select id="queryAll" resultMap="UserAddress">
+		select * from t_user_address 
+		<where>
+			<if test="user_id != null and '' != user_id">
+			    user_id = #{user_id}
+			</if>
+			<if test="contacts != null and '' != contacts">
+			   and contacts like "%"#{contacts}"%"
+			</if>
+		</where>
+		limit #{offset},#{limit}
+	</select>
+
+	<!-- 查找记录总记录数 -->
+	<select id="queryCount" resultType="int">
+		select count(*) from t_user_address
+	</select>
+	
+	<!-- 根据id查询单个记录数 -->
+	<select id="loadById" resultMap="UserAddress" parameterType="int">
+		select * from t_user_address where id = #{id}
+	</select>
+	
+	<update  id="update"  parameterType="cn.business.backend.model.UserAddress">
+		update 
+			t_user_address
+		set 
+			id=#{id}
+			<if test="userId != null and userId != ''">
+			    ,user_id = #{userId}
+			</if>
+			<if test="contacts != null and contacts != ''">
+			    ,contacts = #{contacts}
+			</if>
+			<if test="tel != null and tel != ''">
+			    ,tel = #{tel}
+			</if>
+			<if test="mobile != null and mobile != ''">
+			    ,mobile = #{mobile}
+			</if>
+			<if test="country != null and country != ''">
+			    ,country = #{country}
+			</if>
+			<if test="province != null and province != ''">
+			    ,province = #{province}
+			</if>
+			<if test="city != null and city != ''">
+			    ,city = #{city}
+			</if>
+			<if test="district != null and district != ''">
+			    ,district = #{district}
+			</if>
+			<if test="address != null and address != ''">
+			    ,address=#{address}
+			</if>
+		where id=#{id}
+	</update>
+	
+	<insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="cn.business.backend.model.UserAddress">
+		insert into t_user_address(user_id,contacts,tel,mobile,country,province,city,district,address)
+		values(#{userId},#{contacts},#{tel},#{mobile},#{country},#{province},#{city},#{district},#{address})
+	</insert>
+	
+	<delete id="delete" parameterType="int">
+		delete from t_user_address where id = #{id}
+	</delete>
+	
+</mapper>

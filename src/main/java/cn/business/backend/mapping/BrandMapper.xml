@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.business.backend.dao.IBrandDao">
+	<resultMap id="BaseResultMap" type="cn.business.backend.model.Brand">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="name_zh" jdbcType="VARCHAR" property="nameZh" />
+		<result column="name_en" jdbcType="VARCHAR" property="nameEn" />
+		<result column="logo" jdbcType="VARCHAR" property="logo" />
+		<result column="desc_zh" jdbcType="VARCHAR" property="descZh" />
+		<result column="desc_en" jdbcType="VARCHAR" property="descEn" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, name_zh, name_en, logo, desc_zh, desc_en
+	</sql>
+
+	<!-- 根据用户id查询 -->
+	<select id="loadById" resultMap="BaseResultMap" parameterType="int">
+		select
+		<include refid="Base_Column_List"></include>
+		from t_brand where id = #{id}
+	</select>
+
+	<!-- 分页查询 -->
+	<select id="queryAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"></include>
+		from t_brand
+		<where>
+			<!-- 品牌ID -->
+			<if test="id != null and '' != id">
+				id = #{id}
+			</if>
+			<!-- 品牌中文名 -->
+			<if test="nameZh != null and '' != nameZh">
+				and name_zh like "%"#{nameZh}"%"
+			</if>
+			<!-- 品牌英文名 -->
+			<if test="nameEn != null and '' != nameEn">
+				and name_en like "%"#{nameEn}"%"
+			</if>
+		</where>
+		<if test="orderBy != null and '' != orderBy">
+			order by ${orderBy}
+		</if>
+		<if
+			test="offset != null and '' != offset and limit != null and '' != limit">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+
+	<!-- 查找记录总记录数 -->
+	<select id="queryCount" resultType="int">
+		select count(*) from
+		t_brand
+	</select>
+
+	<!-- 更新 -->
+	<update id="update" parameterType="cn.business.backend.model.Brand">
+		update t_brand
+		<set>
+			name_zh = #{nameZh,jdbcType=VARCHAR},
+			name_en =
+			#{nameEn,jdbcType=VARCHAR},
+			<if test="logo != null">
+				logo = #{logo,jdbcType=VARCHAR},
+			</if>
+			desc_zh = #{descZh,jdbcType=VARCHAR},
+			desc_en
+			=#{descEn,jdbcType=VARCHAR}
+		</set>
+		where
+		id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<!-- 保存 -->
+	<insert id="save" parameterType="cn.business.backend.model.Brand"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into t_brand
+		(name_zh,name_en,logo, desc_zh, desc_en)
+		values
+		(#{nameZh},#{nameEn},#{logo},#{descZh}, #{descEn})
+	</insert>
+
+	<!-- 删除 -->
+	<delete id="delete" parameterType="int">
+		delete from
+		t_brand
+		where id =
+		#{id,jdbcType=INTEGER}
+	</delete>
+
+</mapper>

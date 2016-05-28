@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.business.backend.dao.IUserDao">
+
+	<resultMap type="cn.business.backend.model.User" id="baseUser">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="real_name" property="realName"/>
+		<result column="password" property="password"/>
+		<result column="email" property="email"/>
+		<result column="mobile" property="mobile"/>
+		<result column="other_account" property="otherAccount"/>
+		<result column="status" property="status"/>
+		<result column="level" property="level"/>
+		<result column="point" property="point"/>
+		<result column="add_time" property="addTime"/>
+	</resultMap>
+	
+	<resultMap type="cn.business.backend.model.User" id="user" extends="baseUser">  
+        <collection property="roles" ofType="cn.business.backend.model.Role">  
+            <id property="id" column="role_id" />  
+            <result property="nameZh" column="name_zh" />  
+            <result property="nameEn" column="name_en" />  
+            <result property="auth" column="auth" />  
+        </collection>  
+    </resultMap>
+	
+	<!-- 根据用户id查询 -->
+	<select id="loadById" resultMap="user" parameterType="int">
+		select 
+			u.id, u.name, u.password, u.real_name, u.email, u.mobile,
+			u.other_account, u.status, u.level, u.point, u.add_time,
+			r.id as role_id, r.name_zh, r.name_en, r.auth
+		from 
+			t_user u left join t_user_role ur on u.id = ur.user_id  
+        left join t_role r on ur.role_id = r.id 
+        where u.id = #{id} 
+	</select>
+	
+	<!-- 根据用户名查询 -->
+	<select id="loadByName" resultMap="user" parameterType="String">
+		select u.id, u.name, u.password, u.real_name, u.email, u.mobile,
+			u.other_account, u.status, u.level, u.point, u.add_time,
+			r.id as role_id, r.name_zh, r.name_en, r.auth 
+		from t_user u left join t_user_role ur on u.id = ur.user_id   
+        left join t_role r on ur.role_id = r.id   
+        where u.name = #{name} 
+	</select>
+	
+	<!-- 分页查询 -->
+	<select id="queryAll" resultMap="baseUser">
+		select * from t_user
+		<where>
+			<if test="id != null and '' != id">
+			    id = #{id} or name = #{id}
+			</if>
+		</where>
+		limit #{offset},#{limit}
+	</select>
+	
+	<!-- 查找记录总记录数 -->
+	<select id="queryCount" resultType="int">
+		select count(*) from t_user
+	</select>
+	
+	<!-- 更新 -->
+	<update id="update" parameterType="cn.business.backend.model.User">
+		update 
+			t_user
+		set 
+			name=#{name}
+			<if test="password != null and password != ''">
+			    ,password=#{password}
+			</if>
+		where id=#{id}
+	</update>
+	
+	<!-- 保存 -->
+	<insert id="save" parameterType="cn.business.backend.model.User" useGeneratedKeys="true" keyProperty="id">
+		insert into t_user(name,password,real_name,email,mobile,other_account,status,level,point,add_time)
+		values(#{name},#{password},#{realName},#{email},#{mobile},#{otherAccount},#{status},#{level},#{point},#{addTime})
+	</insert>
+	
+	<!-- 保存用户和角色之间的关联 -->  
+    <insert id="saveUserRole" parameterType="cn.business.backend.model.UserRole">  
+        insert into t_user_role(user_id,role_id)  
+        values(#{userId},#{roleId})  
+    </insert>
+	
+	<!-- 删除用户和角色之间的关联 --> 
+	<delete id="delUserRole">
+		delete from t_user_role where user_id=#{userId} and role_id=#{roleId}
+	</delete>
+</mapper>

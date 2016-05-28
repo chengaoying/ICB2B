@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.business.backend.dao.IGoodsPropertyDao">
+	<resultMap id="BaseResultMap" type="cn.business.backend.model.GoodsProperty">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+		<result column="name_zh" jdbcType="VARCHAR" property="nameZh" />
+		<result column="name_en" jdbcType="VARCHAR" property="nameEn" />
+		<result column="value_zh" jdbcType="VARCHAR" property="valueZh" />
+		<result column="value_en" jdbcType="VARCHAR" property="valueEn" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, goods_id, name_zh, name_en, value_zh, value_en
+	</sql>
+
+	<!-- 根据id查询 -->
+	<select id="loadById" resultMap="BaseResultMap" parameterType="int">
+		select
+		<include refid="Base_Column_List"></include>
+		from t_goods_property where id = #{id}
+	</select>
+
+	<!-- 分页查询 -->
+	<select id="queryAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"></include>
+		from t_goods_property
+		<where>
+			<!-- 属性ID -->
+			<if test="id != null and '' != id">
+				id = #{id}
+			</if>
+		</where>
+		<if test="orderBy != null and '' != orderBy">
+			order by ${orderBy}
+		</if>
+		<if test="offset != null and '' != offset and limit != null and '' != limit">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+
+	<!-- 查找记录总记录数 -->
+	<select id="queryCount" resultType="int">
+		select count(*) from t_goods_property
+	</select>
+
+	<!-- 更新 -->
+	<update id="update" parameterType="cn.business.backend.model.Brand">
+		update t_goods_property
+		set goods_id = #{goodsId,jdbcType=INTEGER},
+		name_zh =
+		#{nameZh,jdbcType=VARCHAR},
+		name_en = #{nameEn,jdbcType=VARCHAR},
+		value_zh = #{valueZh,jdbcType=VARCHAR},
+		value_en =
+		#{valueEn,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<!-- 保存 -->
+	<insert id="save" parameterType="cn.business.backend.model.Brand" useGeneratedKeys="true" keyProperty="id">
+		insert
+		into t_goods_property ( goods_id, name_zh,name_en, value_zh, value_en)
+		values (#{ #{goodsId,jdbcType=INTEGER},
+		#{nameZh,jdbcType=VARCHAR},
+		#{nameEn,jdbcType=VARCHAR}, #{valueZh,jdbcType=VARCHAR}, #{valueEn,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<!-- 删除 -->
+	<delete id="delete" parameterType="int">
+		delete from t_goods_property
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+</mapper>

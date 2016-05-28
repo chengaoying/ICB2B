@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd">
+		
+	<!-- 扫描controller（controller层注入） --> 
+	<context:component-scan base-package="cn.*.*.controller" />
+	
+	<!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
+	<mvc:annotation-driven>
+	    <mvc:message-converters register-defaults="true">
+	        <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+	            <property name="supportedMediaTypes">
+	                <list>
+	                    <value>text/html;charset=UTF-8</value>
+	                </list>
+	            </property>
+	        </bean>
+	    </mvc:message-converters>
+	</mvc:annotation-driven>
+	
+	<!-- 静态资源访问处理 -->
+    <!-- <mvc:default-servlet-handler/> -->
+    <mvc:resources mapping="/image/**" location="/image/" />
+    <mvc:resources mapping="/css/**" location="/css/" />
+    <mvc:resources mapping="/js/**" location="/js/" />
+	<mvc:resources mapping="/upfile/**" location="/upfile/" />
+    
+    <!-- 页面重定向 -->
+    <mvc:view-controller path="/" view-name="redirect:/backend/index"/>
+    
+    <!-- 拦截器配置 -->
+    <mvc:interceptors>
+    	<!-- 后台拦截器 -->
+        <mvc:interceptor>
+            <mvc:mapping path="/backend/**"/>
+            <bean class="cn.core.framework.interceptor.BackendInterceptor"/>
+        </mvc:interceptor>
+        
+        <!-- 前端拦截器 -->
+        <mvc:interceptor>
+            <mvc:mapping path="/frontend/userCenter/**"/>
+            <!-- <mvc:mapping path="/frontend/index.html"/> -->
+            <bean class="cn.core.framework.interceptor.FrontendInterceptor"/>
+        </mvc:interceptor>
+        
+        <!--国际化资源切换（根据请求参数中的locale参数自动切换）-->
+        <mvc:interceptor>
+            <mvc:mapping path="/frontend/**"/>
+            <ref bean="localeChangeInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="1"/> 
+	<!-- 视图一、jsp视图 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/jsp/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	
+	<!-- 视图二、json视图 -->
+	<bean name="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+		<property name="contentType" value="text/html;charset=UTF-8"/>
+	</bean>
+	
+	<!--文件上传-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+   		<property name="maxUploadSize" value="1000000"/>
+    </bean>
+
+	<!-- 统一异常处理 -->
+    <bean id="exceptionResolver" class="cn.core.framework.exception.ExceptionResolver"/>
+
+</beans>

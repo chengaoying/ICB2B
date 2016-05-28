@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.business.backend.dao.IDiscountGoodsDao">
+	<resultMap id="BaseResultMap" type="cn.business.backend.model.DiscountGoods">
+		<id column="goods_id" jdbcType="INTEGER" property="goodsId" />
+		<result column="discount_price" jdbcType="REAL" property="discountPrice" />
+		<result column="discount_start_date" jdbcType="TIMESTAMP" property="discountStartDate" />
+		<result column="discount_end_date" jdbcType="TIMESTAMP" property="discountEndDate" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		goods_id, discount_price, discount_start_date, discount_end_date
+	</sql>
+
+	<!-- 根据id查询 -->
+	<select id="loadById" resultMap="BaseResultMap" parameterType="int">
+		select
+		<include refid="Base_Column_List"></include>
+		from t_discount_goods where goods_id = #{id}
+	</select>
+
+	<!-- 分页查询 -->
+	<select id="queryAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"></include>
+		from t_discount_goods
+		<where>
+			<!-- 品牌ID -->
+			<if test="id != null and '' != id">
+				goods_id = #{id}
+			</if>
+			<!-- 拼购开始时间 -->
+			<if test="discountStartDate != null and '' != discountStartDate">
+				and start_date like "%"#{discountStartDate}"%"
+			</if>
+			<!-- 拼购结束时间 -->
+			<if test="discountEndDate != null and '' != discountEndDate">
+				and end_date like "%"#{discountEndDate}"%"
+			</if>
+		</where>
+		<if test="orderBy != null and '' != orderBy">
+			order by ${orderBy}
+		</if>
+		<if test="offset != null and '' != offset and limit != null and '' != limit">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+
+	<!-- 查找记录总记录数 -->
+	<select id="queryCount" resultType="int">
+		select count(*) from
+		t_discount_goods
+	</select>
+
+	<!-- 更新 -->
+	<update id="update" parameterType="cn.business.backend.model.DiscountGoods">
+		update t_discount_goods
+		set discount_price = #{discountPrice,jdbcType=REAL},
+		discount_start_date = #{discountStartDate,jdbcType=TIMESTAMP},
+		discount_end_date =
+		#{discountEndDate,jdbcType=TIMESTAMP}
+		where goods_id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<!-- 保存 -->
+	<insert id="save" parameterType="cn.business.backend.model.DiscountGoods" useGeneratedKeys="true" keyProperty="id">
+		insert
+		into t_discount_goods (goods_id, discount_price, discount_start_date,discount_end_date)
+		values
+		(#{goodsId,jdbcType=INTEGER}, #{discountPrice,jdbcType=REAL}, #{discountStartDate,jdbcType=TIMESTAMP},
+		#{discountEndDate,jdbcType=TIMESTAMP})
+	</insert>
+
+	<!-- 删除 -->
+	<delete id="delete" parameterType="int">
+		delete from t_discount_goods
+		where goods_id =
+		#{id,jdbcType=INTEGER}
+	</delete>
+
+</mapper>

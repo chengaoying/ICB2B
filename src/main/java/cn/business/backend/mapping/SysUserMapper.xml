@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.business.backend.dao.ISysUserDao">
+
+	<!-- 嵌套结果：如果两张表的字段名字有相同的，那么嵌套的结果的值会有问题 -->
+	<!-- 有此类问可以使用嵌套查询，如下： -->
+	
+	<resultMap type="cn.business.backend.model.SysUser" id="sysUser">
+		<id column="id" property="id"/>
+		<result column="account" property="account"/>
+		<result column="name" property="name"/>
+		<result column="password" property="password"/>
+		<result column="status" property="status"/>
+		<result column="lastTime" property="lastTime"/>
+		<result column="lastIp" property="lastIp"/>
+		<result column="addTime" property="addTime"/>
+		
+		<association property="role" column="roleId" select="getSysRole">
+			<id column="id" property="id"/>
+			<result column="name" property="name"/>
+			<result column="auth" property="auth"/>
+			<result column="isSuper" property="isSuper"/>
+			<result column="addTime" property="addTime"/>
+		</association>
+	</resultMap>
+	
+	<!-- 关联查询用户所属角色 -->
+	<select id="getSysRole" resultType="cn.business.backend.model.SysRole" parameterType="int">
+		select * from t_sys_role where id = #{id}
+	</select>
+	
+	<!-- 根据用户id查询 -->
+	<select id="loadById" resultMap="sysUser" parameterType="int">
+		select * from t_sys_user where id = #{id}
+	</select>
+	
+	<!-- 根据用户账号查询 -->
+	<select id="loadByAccount" resultMap="sysUser" parameterType="String">
+		select * from t_sys_user where account = #{account}
+	</select>
+	
+	<!-- 分页查询 -->
+	<select id="queryAll" resultMap="sysUser">
+		select * from t_sys_user 
+		<where>
+			<if test="id != null and '' != id">
+			    id = #{id} or account = #{id}
+			</if>
+		</where>
+		limit #{offset},#{limit}
+	</select>
+	
+	<!-- 查找记录总记录数 -->
+	<select id="queryCount" resultType="int">
+		select count(*) from t_sys_user
+	</select>
+	
+	<!-- 更新 -->
+	<update  id="update"  parameterType="cn.business.backend.model.SysUser">
+		update 
+			t_sys_user
+		set 
+			account=#{account},name=#{name}
+			<if test="password != null and password != ''">
+			    ,password=#{password}
+			</if>
+			,roleId=#{role.id},status=#{status}
+			<if test="lastTime != null and lastTime != ''">
+			    ,lastTime=#{lastTime}
+			</if>
+			<if test="lastIp != null and lastIp != ''">
+			    ,lastIp=#{lastIp}  
+			</if>
+		where id=#{id}
+	</update>
+	
+	<!-- 保存 -->
+	<insert id="save" parameterType="cn.business.backend.model.SysUser">
+		insert into t_sys_user(account,name,password,roleId,status,lastTime,lastIp,addTime)
+		values(#{account},#{name},#{password},#{role.id},#{status},#{lastTime},#{lastIp},#{addTime})
+	</insert>
+	
+	<!-- 删除 -->
+	<delete id="delete" parameterType="int">
+		delete from t_sys_user where id = #{id}
+	</delete>
+</mapper>

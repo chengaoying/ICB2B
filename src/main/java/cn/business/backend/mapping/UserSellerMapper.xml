@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.business.backend.dao.IUserSellerDao">
+
+	<!-- 嵌套结果：如果两张表的字段名字有相同的，那么嵌套的结果的值会有问题 -->
+	<!-- 有此类问可以使用嵌套查询，如下： -->
+	
+	<resultMap type="cn.business.backend.model.UserSeller" id="userSeller">
+			<id column="id" property="id"/>
+			<result column="user_id" property="userId"/>
+			<result column="seller_id" property="sellerId"/>
+			<result column="seller_name" property="sellerName"/>
+			<result column="model" property="model"/>
+			<result column="region" property="region"/>
+	</resultMap>
+		
+	<!-- 分页查询 -->
+	<select id="queryAll" resultMap="userSeller">
+		select * from t_user_seller 
+		<where>
+			<if test="user_id != null and '' != user_id">
+			    user_id = #{user_id}
+			</if>
+			<if test="seller_id != null and '' != seller_id">
+			   and seller_id = #{seller_id}
+			</if>
+		</where>
+		limit #{offset},#{limit}
+	</select>
+
+	<!-- 查找记录总记录数 -->
+	<select id="queryCount" resultType="int">
+		select count(*) from t_user_seller
+	</select>
+	
+</mapper>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.business.backend.dao.IOrderItemDao">
+
+	<!-- 嵌套结果：如果两张表的字段名字有相同的，那么嵌套的结果的值会有问题 -->
+	<!-- 有此类问可以使用嵌套查询，如下： -->
+	
+	<resultMap type="cn.business.backend.model.OrderItem" id="OrderItem">
+			<id column="id" property="id"/>
+			<result column="order_id" property="orderId"/>
+			<result column="goods_model" property="goodsModel"/>
+			<result column="cat_name_zh" property="catNameZh"/>
+			<result column="cat_name_en" property="catNameEn"/>
+			<result column="seller_name" property="sellerName"/>
+			<result column="brand_name_zh" property="brandNameZh"/>
+			<result column="brand_name_en" property="brandNameEn"/>
+			<result column="is_in_stock" property="isInStock"/>
+			<result column="num" property="num"/>
+			<result column="normal_price" property="normalPrice"/>
+			<result column="promote_price" property="promotePrice"/>
+			<result column="delivery_date" property="deliveryDate"/>
+			<result column="delivery_type" property="deliveryType"/>
+	</resultMap>
+		
+	<!-- 分页查询 -->
+	<select id="queryAll" resultMap="OrderItem">
+		select * from t_order_items 
+		<where>
+			<if test="orderId != null and '' != orderId">
+			    order_id = #{orderId}
+			</if>
+			<if test="goodsModel != null and '' != goodsModel">
+			   and goods_model = #{goodsModel}
+			</if>
+		</where>
+		limit #{offset},#{limit}
+	</select>
+
+	<!-- 查找记录总记录数 -->
+	<select id="queryCount" resultType="int">
+		select count(*) from t_order_items
+	</select>
+	
+	<!-- 根据id查询单个记录数 -->
+	<select id="loadById" resultMap="OrderItem" parameterType="int">
+		select * from t_order_items where id = #{id}
+	</select>
+	
+	<update  id="update"  parameterType="cn.business.backend.model.OrderItem">
+		update 
+			t_order_items
+		set 
+			id=#{id}
+			<if test="orderId != null">
+			    ,order_id = #{orderId}
+			</if>
+			<if test="goodsModel != null and goodsModel != ''">
+			    ,goods_model = #{goodsModel}
+			</if>
+			<if test="catNameZh != null and catNameZh != ''">
+			    ,cat_name_zh = #{catNameZh}
+			</if>
+			<if test="catNameEn != null and catNameEn != ''">
+			    ,cat_name_en = #{catNameEn}
+			</if>
+			<if test="sellerName != null and sellerName != ''">
+			    ,seller_name = #{sellerName}
+			</if>
+			<if test="brandNameZh != null and brandNameZh != ''">
+			    ,brand_name_zh = #{brandNameZh}
+			</if>
+			<if test="brandNameEn != null and brandNameEn != ''">
+			    ,brand_name_en = #{brandNameEn}
+			</if>
+			<if test="isInStock != null">
+			    ,is_in_stock = #{isInStock}
+			</if>
+			<if test="num != null">
+			    ,num = #{num}
+			</if>
+			<if test="normalPrice != null">
+			    ,normal_price = #{normalPrice}
+			</if>
+			<if test="promotePrice != null">
+			    ,promote_price = #{promotePrice}
+			</if>
+			<if test="deliveryDate != null">
+			    ,delivery_date = #{deliveryDate}
+			</if>
+			<if test="deliveryType != null">
+			    ,delivery_type = #{deliveryType}
+			</if>
+		where id=#{id}
+	</update>
+	
+	<insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="cn.business.backend.model.OrderItem">
+		insert into t_order_items(order_id,goods_model,cat_name_zh,cat_name_en,seller_name,brand_name_zh,brand_name_en,is_in_stock,num,normal_price,promote_price,delivery_date,delivery_type)
+		values(#{orderId},#{goodsModel},#{catNameZh},#{catNameEn},#{sellerName},#{brandNameZh},#{brandNameEn},#{isInStock},#{num},#{normalPrice},#{promotePrice},#{deliveryDate},#{deliveryType})
+	</insert>
+	
+	<delete id="delete" parameterType="int">
+		delete from t_order_items where id = #{id}
+	</delete>
+	
+</mapper>

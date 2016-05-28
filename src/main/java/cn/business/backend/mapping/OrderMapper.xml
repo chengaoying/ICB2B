@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.business.backend.dao.IOrderDao">
+
+	<!-- 嵌套结果：如果两张表的字段名字有相同的，那么嵌套的结果的值会有问题 -->
+	<!-- 有此类问可以使用嵌套查询，如下： -->
+	
+	<resultMap type="cn.business.backend.model.Order" id="Order">
+			<id column="id" property="id"/>
+			<result column="name" property="name"/>
+			<result column="buyer_id" property="buyerId"/>
+			<result column="seller_id" property="sellerId"/>
+			<result column="code" property="code"/>
+			<result column="city" property="city"/>
+			<result column="amount" property="amount"/>
+			<result column="contacts" property="contacts"/>
+			<result column="tel" property="tel"/>
+			<result column="address" property="address"/>
+			<result column="status" property="status"/>
+			<result column="type" property="type"/>
+			<result column="certificate1" property="certificate1"/>
+			<result column="certificate2" property="certificate2"/>
+			<result column="add_time" property="addTime"/>
+	</resultMap>
+		
+	<!-- 分页查询 -->
+	<select id="queryAll" resultMap="Order">
+		select * from t_order 
+		<where>
+			<if test="buyerId != null and '' != buyerId">
+			    buyer_id = #{buyerId}
+			</if>
+			<if test="sellerId != null and '' != sellerId">
+			   and seller_id = #{sellerId}
+			</if>
+		</where>
+		limit #{offset},#{limit}
+	</select>
+
+	<!-- 查找记录总记录数 -->
+	<select id="queryCount" resultType="int">
+		select count(*) from t_order
+	</select>
+	
+	<!-- 根据id查询单个记录数 -->
+	<select id="loadById" resultMap="Order" parameterType="int">
+		select * from t_order where id = #{id}
+	</select>
+	
+	<update  id="update"  parameterType="cn.business.backend.model.Order">
+		update 
+			t_order
+		set 
+			id=#{id}
+			<if test="buyerId != null and buyerId != ''">
+			    ,buyer_id = #{buyerId}
+			</if>
+			<if test="sellerId != null and sellerId != ''">
+			    ,seller_id = #{sellerId}
+			</if>
+			<if test="code != null and code != ''">
+			    ,code = #{code}
+			</if>
+			<if test="amount != null and amount != ''">
+			    ,amount = #{amount}
+			</if>
+			<if test="contacts != null and contacts != ''">
+			    ,contacts = #{contacts}
+			</if>
+			<if test="tel != null and tel != ''">
+			    ,tel = #{tel}
+			</if>
+			<if test="address != null and address != ''">
+			    ,address = #{address}
+			</if>
+			<if test="status != null">
+			    ,status = #{status}
+			</if>
+			<if test="type != null and type != ''">
+			    ,type = #{type}
+			</if>
+			<if test="certificate1 != null and certificate1 != ''">
+			    ,certificate1 = #{certificate1}
+			</if>
+			<if test="certificate2 != null and certificate2 != ''">
+			    ,certificate2 = #{certificate2}
+			</if>
+		where id=#{id}
+	</update>
+	
+	<insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="cn.business.backend.model.Order">
+		insert into t_order(buyer_id,seller_id,code,amount,contacts,tel,address,status,type,certificate1,certificate2,add_time)
+		values(#{buyerId},#{sellerId},#{code},#{amount},#{contacts},#{tel},#{address},#{status},#{type},#{certificate1},#{certificate2},#{addTime})
+	</insert>
+	
+	<delete id="delete" parameterType="int">
+		delete from t_order where id = #{id}
+	</delete>
+	
+</mapper>

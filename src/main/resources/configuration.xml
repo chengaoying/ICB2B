@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 全局配置文件 -->
+<configuration>
+	
+	<!-- 部署模式，单节点部署-standalone，集群部署-cluster -->
+	<property name="deploy_model">standalone</property>
+	
+	<!-- 静态资源地址 -->
+	<property name="resource_uri"><![CDATA[http://localhost:8080/ICB2B/]]></property>
+	
+	<!-- 后台页面pageSize -->
+	<property name="backend_pagesize">20</property>
+
+	<!-- image 存储路径 -->
+	<property name="image_uri"><![CDATA[/upfile/image/]]></property>
+	<!-- excel 存储路径 -->
+	<property name="excel_uri"><![CDATA[/upfile/excel/]]></property>
+	<!-- pdf 存储路径 -->
+	<property name="pdf_uri"><![CDATA[/upfile/pdf/]]></property>
+	
+
+	<!-- 邮件服务器配置 (测试时可使用qq邮箱做邮件服务)-->
+	<!-- <property name="mail_server_host"><![CDATA[smtp.qq.com]]></property> -->
+	<property name="mail_server_host"><![CDATA[smtp.aliyun.com]]></property>
+	<property name="user"><![CDATA[pingxin@aliyun.com]]></property>
+	<property name="password"><![CDATA[px123456]]></property>
+	<property name="mail_sender"><![CDATA[pingxin@aliyun.com]]></property>
+	
+	
+	<!-- FTP服务器配置 -->
+	<property name="ftp_server_host"><![CDATA[112.74.204.238]]></property>
+	<property name="ftp_server_port"><![CDATA[21]]></property>
+	<property name="ftp_user"><![CDATA[test]]></property>
+	<property name="ftp_password"><![CDATA[123456]]></property>
+	
+	<!-- 客服qq -->
+	<!-- <property name="service_qq">1165086572</property> -->
+	
+	<!-- 产品分类层级数(最大为2) -->
+	<property name="product_class_level_number">2</property>
+	
+</configuration>

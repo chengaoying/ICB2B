@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.business.backend.dao.ISysRoleDao">
+	
+	<resultMap type="cn.business.backend.model.SysRole" id="sysRole">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="auth" property="auth"/>
+		<result column="isSuper" property="isSuper"/>
+		<result column="addTime" property="addTime"/>
+	</resultMap>
+	
+	<select id="loadById" resultMap="sysRole" parameterType="int">
+		select * from t_sys_role where id = #{id}
+	</select>
+	
+	<select id="queryAll" resultMap="sysRole">
+		select * from t_sys_role 
+		<where>
+			<if test="id != null and '' != id">
+			    id = #{id} or name like "%"#{id}"%"
+			</if>
+		</where>
+		limit #{offset},#{limit}
+	</select>
+	
+	<select id="queryCount" resultType="int">
+		select count(*) from t_sys_role
+	</select>
+	
+	<update  id="update"  parameterType="cn.business.backend.model.SysRole">
+		update 
+			t_sys_role
+		set 
+			name=#{name},auth=#{auth},isSuper=#{isSuper}
+		where id=#{id}
+	</update>
+	
+	<insert id="save" parameterType="cn.business.backend.model.SysRole">
+		insert into t_sys_role(name,auth,isSuper,addTime)
+		values(#{name},#{auth},#{isSuper},#{addTime})
+	</insert>
+	
+	<delete id="delete" parameterType="int">
+		delete from t_sys_role where id = #{id}
+	</delete>
+	
+	<!-- <cache eviction="LRU" type="cn.core.framework.cache.MybatisRedisCache" /> -->
+</mapper>

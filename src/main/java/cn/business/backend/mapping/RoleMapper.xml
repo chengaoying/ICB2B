@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.business.backend.dao.IRoleDao">
+
+	<resultMap type="cn.business.backend.model.Role" id="role">
+		 <id property="id" column="id" />  
+         <result property="nameZh" column="name_zh" />  
+         <result property="nameEn" column="name_en" />  
+         <result property="auth" column="auth" /> 
+	</resultMap>
+	
+	<!-- 根据用户id查询 -->
+	<select id="loadById" resultMap="role" parameterType="int">
+		select * from t_role where id = #{id} 
+	</select>
+	
+	<!-- 分页查询 -->
+	<select id="queryAll" resultMap="role">
+		select * from t_role limit #{offset},#{limit}
+	</select>
+	
+	<!-- 查找记录总记录数 -->
+	<select id="queryCount" resultType="int">
+		select count(*) from t_role
+	</select>
+	
+	<!-- 更新 -->
+	<update id="update" parameterType="cn.business.backend.model.Role">
+		update 
+			t_role
+		set name_zh=#{nameZh} ,name_en=#{nameEn}
+			<if test="auth != null and auth != ''">
+			    ,auth=#{auth}
+			</if>
+		where id=#{id}
+	</update>
+	
+	<!-- 保存 -->
+	<insert id="save" parameterType="cn.business.backend.model.Role" useGeneratedKeys="true" keyProperty="id">
+		insert into t_role(name_zh,name_en,auth)
+		values(#{nameZh},#{nameEn},#{auth})
+	</insert>
+	
+	<!-- 删除 -->
+	<delete id="delete" parameterType="int">
+		delete from t_role where id = #{id}
+	</delete>
+	
+</mapper>
