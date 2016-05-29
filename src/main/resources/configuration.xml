@@ -7,7 +7,7 @@
 	<property name="deploy_model">standalone</property>
 	
 	<!-- 静态资源地址 -->
-	<property name="resource_uri"><![CDATA[http://localhost:8080/ICB2B/]]></property>
+	<property name="resource_uri"><![CDATA[http://114.215.183.142:8000/ICB2B/]]></property>
 	
 	<!-- 后台页面pageSize -->
 	<property name="backend_pagesize">20</property>
