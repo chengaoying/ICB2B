@@ -5,7 +5,7 @@
 	<artifactId>cn.core</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1</version>
-	<name>jt Maven Webapp</name>
+	<name>icb2b Maven Webapp</name>
 	<url>http://maven.apache.org</url>
  
 	<!-- 依赖包管理 -->
@@ -409,14 +409,14 @@
 		        <!-- 是否替换资源中的属性  --> 
 		        <filtering>false</filtering>  
 		    </resource>  
-		    <!-- <resource>  
+		    <resource>  
 		        <directory>src/main/resources</directory>  
-		            <includes> 
-		            	<include>**/*.properties</include>  
-		            	<include>**/*.xml</include> 
-		            </includes>
-		            <filtering>true</filtering>  
-		    </resource> -->  
+	            <includes> 
+	            	<include>**/*.properties</include>  
+	            	<include>**/*.xml</include> 
+	            </includes>
+	            <filtering>true</filtering>  
+		    </resource> 
 		</resources>
 	</build>
 
